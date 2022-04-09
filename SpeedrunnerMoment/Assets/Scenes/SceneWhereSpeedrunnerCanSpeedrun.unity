@@ -502,4 +502,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 3
-  velocitySmoothness: 2
+  strafeSpeedFraction: 0.5
+  backwardSpeedFraction: 0.35
+  secondsToFullSpeed: 1

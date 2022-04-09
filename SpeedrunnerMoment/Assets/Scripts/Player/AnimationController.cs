@@ -9,26 +9,23 @@ namespace Player
         private Animator _animator;
         private Movement _movement;
 
-        private int _forwardVelocityParameter;
-        private int _rightVelocityParameter;
+        private int ForwardVelocityParameter { get; } = Animator.StringToHash("ForwardVelocity");
+        private int RightVelocityParameter { get; }   = Animator.StringToHash("RightVelocity");
         
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _movement = GetComponent<Movement>();
-
-            _forwardVelocityParameter = Animator.StringToHash("ForwardVelocity");
-            _rightVelocityParameter   = Animator.StringToHash("RightVelocity");
         }
 
         private void OnEnable()
         {
-            _movement.OnAxisInputObtained += UpdateAnimation;
+            _movement.OnAxisInputHandled += UpdateAnimation;
         }
 
         private void OnDisable()
         {
-            _movement.OnAxisInputObtained -= UpdateAnimation;
+            _movement.OnAxisInputHandled -= UpdateAnimation;
         }
 
         private void UpdateAnimation(Vector3 axisInputs)
@@ -36,8 +33,8 @@ namespace Player
             var forward = axisInputs.z;
             var right   = axisInputs.x;
             
-            _animator.SetFloat(_forwardVelocityParameter, forward);
-            _animator.SetFloat(_rightVelocityParameter,   right);
+            _animator.SetFloat(ForwardVelocityParameter, forward);
+            _animator.SetFloat(RightVelocityParameter,   right);
         }
     }
 }
