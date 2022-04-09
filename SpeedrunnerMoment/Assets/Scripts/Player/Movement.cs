@@ -8,13 +8,11 @@ namespace Player
     {
         public float maxSpeed;
         
-        public float secondsToFullSpeed;
-        private float _axisInputSensitivity;
-        
-        [Range(0.0f, 0.99f)]
+        [Range(1.0f, 10.0f)]
         public float velocitySmoothness;
-        
-        
+        private float _axisInputSensitivity;
+
+
         public delegate void AxisInput(Vector3 input);
         public event AxisInput OnAxisInputObtained;
 
@@ -22,15 +20,12 @@ namespace Player
         private Vector3 _currentAxisInput;
         private const float MaxAxisInputValue = 1.0f;
 
-        
-        private const float MaxVelocitySmoothness = 1.0f;
 
         private ThirdPersonCamera _camera;
         private Rigidbody _rigidbody;
 
         private Vector3 _movementDirection;
 
-        private float VelocitySmoothness => MaxVelocitySmoothness - velocitySmoothness;
         
         private Vector3 MovementVelocity => maxSpeed * _movementDirection;
 
@@ -39,7 +34,6 @@ namespace Player
         {
             _rigidbody = GetComponent<Rigidbody>();
             _currentAxisInput = Vector3.zero;
-            _axisInputSensitivity = MaxAxisInputValue / (secondsToFullSpeed * 60.0f);
 
             var a = GetComponentsInChildren<Collider>();
             Debug.Log(a.Length);
@@ -54,6 +48,7 @@ namespace Player
 
         private void Update()
         {
+            _axisInputSensitivity = MaxAxisInputValue / (velocitySmoothness * 60.0f);
             _movementDirection = GetMovementDirection();
             SmoothMove();
             SynchronizeRotationWithCamera();
@@ -61,8 +56,6 @@ namespace Player
 
         private Vector3 ExtractAxisInput()
         {
-            //var vertical   = Input.GetAxis("Vertical");
-            //var horizontal = Input.GetAxis("Horizontal");
             var forward  = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
             var backward = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
             var left     = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
@@ -126,7 +119,7 @@ namespace Player
         private void SmoothMove()
         {
             var targetVelocity = MovementVelocity;
-            _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, targetVelocity, VelocitySmoothness);
+            _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, targetVelocity, 0.75f);
         }
 
         private void SynchronizeRotationWithCamera()
